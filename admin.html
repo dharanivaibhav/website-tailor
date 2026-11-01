@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dharani Tailors - Admin Management Dashboard</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+
+  <!-- Remix Icons CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-primary: #9E3B5E;
+      --color-primary-dark: #7A2745;
+      --color-primary-light: #F6E6EB;
+      --color-accent: #C59B6C;
+      --color-accent-light: #F9F3EA;
+      --color-bg-main: #FBF9F7;
+      --color-surface: #FFFFFF;
+      --color-text-main: #2C1A21;
+      --color-text-muted: #6B555E;
+      --color-border: #EFE4E8;
+      
+      --color-status-pending: #E65100;
+      --color-status-pending-bg: #FFF3E0;
+      --color-status-confirmed: #1565C0;
+      --color-status-confirmed-bg: #E3F2FD;
+      --color-status-completed: #2E7D32;
+      --color-status-completed-bg: #E8F5E9;
+      --color-status-cancelled: #C62828;
+      --color-status-cancelled-bg: #FFEBEE;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--color-bg-main);
+      color: var(--color-text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------------------------------------------
+       ADMIN LOGIN VIEW STYLES
+       --------------------------------------------- */
+    #admin-login-view {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: radial-gradient(circle at 15% 20%, rgba(158, 59, 94, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 80%, rgba(197, 155, 108, 0.12) 0%, transparent 50%),
+                  var(--color-bg-main);
+      position: relative;
+    }
+
+    #admin-login-view::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(#9e3b5e15 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .login-card {
+      position: relative;
+      z-index: 2;
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      padding: 2.75rem 2.25rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 45px rgba(122, 39, 69, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+      animation: cardAppear 0.4s ease-out;
+    }
+
+    @keyframes cardAppear {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .login-brand-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-logo {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-accent);
+      box-shadow: 0 4px 16px rgba(158, 59, 94, 0.15);
+      margin-bottom: 0.85rem;
+    }
+
+    .login-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      letter-spacing: -0.3px;
+    }
+
+    .login-badge {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      background: var(--color-accent-light);
+      color: var(--color-accent);
+      border: 1px solid rgba(197, 155, 108, 0.25);
+    }
+
+    .login-subtitle {
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      margin-top: 0.6rem;
+      line-height: 1.45;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-text-main);
+      margin-bottom: 0.45rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon-left {
+      position: absolute;
+      left: 14px;
+      font-size: 1.1rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.6rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--color-text-main);
+      background-color: #FAFAFA;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      transition: all 0.25s ease;
+      outline: none;
+    }
+
+    .form-control:focus {
+      background-color: #FFFFFF;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(158, 59, 94, 0.12);
+    }
+
+    .form-control:focus + .input-icon-left,
+    .input-wrapper:focus-within .input-icon-left {
+      color: var(--color-primary);
+    }
+
+    .pwd-toggle-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      font-size: 1.15rem;
+      display: grid;
+      place-items: center;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color 0.2s ease;
+    }
+
+    .pwd-toggle-btn:hover {
+      color: var(--color-primary);
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.25rem;
+      margin-bottom: 1.35rem;
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+    }
+
+    .remember-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-wrap input[type="checkbox"] {
+      accent-color: var(--color-primary);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .quick-creds-hint {
+      color: var(--color-accent);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .login-btn-submit {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 4px 14px rgba(158, 59, 94, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .login-btn-submit:hover {
+      background: linear-gradient(135deg, #B2456C, #8C2C50);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(158, 59, 94, 0.35);
+    }
+
+    .login-btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .login-btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .login-alert {
+      display: none;
+      background: #FFEBEE;
+      border: 1px solid #FFCDD2;
+      color: #C62828;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      align-items: center;
+      gap: 0.6rem;
+      animation: alertShake 0.3s ease;
+    }
+
+    @keyframes alertShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .login-card-footer {
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+    }
+
+    .storefront-back-link {
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.84rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s ease;
+    }
+
+    .storefront-back-link:hover {
+      color: var(--color-primary);
+    }
+
+    /* ---------------------------------------------
+       ADMIN DASHBOARD VIEW STYLES
+       --------------------------------------------- */
+    #admin-dashboard-view {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Top Navigation Bar */
+    .admin-navbar {
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--color-primary-dark);
+    }
+
+    .brand-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .brand-badge {
+      font-size: 0.7rem;
+      background: var(--color-accent-light);
+      color: var(--color-accent);
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+    }
+
+    .admin-session-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.35rem 0.85rem;
+      background: var(--color-bg-main);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+
+    .admin-session-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2E7D32;
+      box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+    }
+
+    .admin-session-email {
+      font-weight: 600;
+      color: var(--color-primary-dark);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.15rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline {
+      border-color: var(--color-border);
+      background: #fff;
+      color: var(--color-text-main);
+    }
+
+    .btn-outline:hover {
+      background: var(--color-primary-light);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .btn-logout {
+      border-color: #FFCDD2;
+      color: #C62828;
+      background: #FFF5F5;
+    }
+
+    .btn-logout:hover {
+      background: #FFEBEE;
+      border-color: #C62828;
+      color: #B71C1C;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    /* Main Container */
+    .admin-container {
+      max-width: 1300px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+      flex: 1;
+    }
+
+    .dashboard-header {
+      margin-bottom: 2rem;
+    }
+
+    .dashboard-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--color-primary-dark);
+      margin-bottom: 0.35rem;
+    }
+
+    .dashboard-header p {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Stat Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.02);
+      transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text-main);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Filter & Controls Bar */
+    .controls-bar {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .status-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 0.45rem 1rem;
+      border-radius: 20px;
+      border: 1px solid var(--color-border);
+      background: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 280px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-muted);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.55rem 1rem 0.55rem 2.25rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(158, 59, 94, 0.1);
+    }
+
+    /* Appointments Table */
+    .table-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #FAF6F8;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      color: var(--color-primary-dark);
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: #FDFAFC;
+    }
+
+    .code-badge {
+      display: inline-block;
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-pending {
+      background: var(--color-status-pending-bg);
+      color: var(--color-status-pending);
+    }
+
+    .badge-confirmed {
+      background: var(--color-status-confirmed-bg);
+      color: var(--color-status-confirmed);
+    }
+
+    .badge-completed {
+      background: var(--color-status-completed-bg);
+      color: var(--color-status-completed);
+    }
+
+    .badge-cancelled {
+      background: var(--color-status-cancelled-bg);
+      color: var(--color-status-cancelled);
+    }
+
+    .status-select {
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+      font-size: 0.8rem;
+      font-weight: 500;
+      font-family: inherit;
+      outline: none;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .action-links {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+      background: #fff;
+      color: var(--color-text-main);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-icon:hover {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .btn-icon-wa {
+      color: #25D366;
+    }
+
+    .btn-icon-wa:hover {
+      background: #E8F5E9;
+      color: #1EBE57;
+      border-color: #25D366;
+    }
+
+    .btn-icon-del {
+      color: #C62828;
+    }
+
+    .btn-icon-del:hover {
+      background: #FFEBEE;
+      color: #B71C1C;
+      border-color: #C62828;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3.5rem 1.5rem;
+      color: var(--color-text-muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--color-primary);
+      opacity: 0.5;
+      margin-bottom: 0.75rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--color-border);
+      background: #fff;
+      padding: 1.25rem 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .admin-navbar {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .admin-session-badge {
+        display: none;
+      }
+      .login-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==============================================================
+       VIEW 1: ADMIN LOGIN VIEW
+       ============================================================== -->
+  <section id="admin-login-view">
+    <div class="login-card">
+      <div class="login-brand-header">
+        <img src="assets/images/logo.jpg" alt="Dharani Tailors Logo" class="login-logo">
+        <h1 class="login-title">Dharani Tailors</h1>
+        <span class="login-badge">Admin Portal</span>
+        <p class="login-subtitle">Sign in to manage appointments, customer inquiries, and tailoring orders.</p>
+      </div>
+
+      <!-- Alert Message Box -->
+      <div id="login-alert" class="login-alert">
+        <i class="ri-error-warning-fill" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+        <span id="login-alert-text">Invalid email or password.</span>
+      </div>
+
+      <form id="admin-login-form" onsubmit="handleLoginSubmit(event)" autocomplete="on">
+        <!-- Email Field -->
+        <div class="form-group">
+          <label class="form-label" for="admin-email">Admin Email Address</label>
+          <div class="input-wrapper">
+            <input 
+              type="email" 
+              id="admin-email" 
+              class="form-control" 
+              placeholder="dharanitailors@gmail.com" 
+              required 
+              autocomplete="username"
+              value="dharanitailors@gmail.com"
+            >
+            <i class="ri-mail-line input-icon-left"></i>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label class="form-label" for="admin-password">Password</label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="admin-password" 
+              class="form-control" 
+              placeholder="••••••••••••" 
+              required 
+              autocomplete="current-password"
+            >
+            <i class="ri-lock-password-line input-icon-left"></i>
+            <button type="button" class="pwd-toggle-btn" onclick="togglePasswordVisibility()" title="Toggle password visibility" tabindex="-1">
+              <i class="ri-eye-line" id="pwd-toggle-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Options: Remember Me -->
+        <div class="form-options">
+          <label class="remember-wrap">
+            <input type="checkbox" id="remember-me" checked>
+            <span>Stay signed in</span>
+          </label>
+          <span class="quick-creds-hint" onclick="fillAdminCredentials()" title="Autofill provided admin credentials">Fill credentials</span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="login-submit-btn" class="login-btn-submit">
+          <span id="login-btn-text">Sign In to Dashboard</span>
+          <i class="ri-arrow-right-line" id="login-btn-icon"></i>
+        </button>
+      </form>
+
+      <div class="login-card-footer">
+        <a href="/" class="storefront-back-link">
+          <i class="ri-arrow-left-line"></i> Back to Public Storefront
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================================
+       VIEW 2: ADMIN MANAGEMENT DASHBOARD
+       ============================================================== -->
+  <div id="admin-dashboard-view" style="display: none;">
+    <!-- Navigation Bar -->
+    <header class="admin-navbar">
+      <a href="/admin" class="brand-wrap">
+        <img src="assets/images/logo.jpg" alt="Dharani Tailors Logo" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div>
+          <div class="brand-title">Dharani Tailors</div>
+        </div>
+        <span class="brand-badge">Admin Portal</span>
+      </a>
+
+      <div class="nav-buttons">
+        <div class="admin-session-badge">
+          <span class="admin-session-dot"></span>
+          <span class="admin-session-email" id="header-admin-email">dharanitailors@gmail.com</span>
+        </div>
+        <a href="/" target="_blank" class="btn btn-outline" title="Open client website in new tab">
+          <i class="ri-external-link-line"></i> Storefront
+        </a>
+        <button id="refresh-btn" class="btn btn-primary" onclick="loadAppointments(); loadStats();" title="Fetch fresh records from database">
+          <i class="ri-refresh-line"></i> Refresh
+        </button>
+        <button class="btn btn-outline btn-logout" onclick="logoutAdmin()" title="Sign out from Admin Portal">
+          <i class="ri-logout-box-r-line"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Container -->
+    <main class="admin-container">
+      <div class="dashboard-header">
+        <h1>Tailoring Appointments & Inquiries</h1>
+        <p>Manage customer measurements, stitching orders, and scheduled consultations in real-time.</p>
+      </div>
+
+      <!-- Statistics Overview -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #F6E6EB; color: #9E3B5E;">
+            <i class="ri-calendar-check-line"></i>
+          </div>
+          <div>
+            <div class="stat-val" id="stat-total">0</div>
+            <div class="stat-label">Total Appointments</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #FFF3E0; color: #E65100;">
+            <i class="ri-time-line"></i>
+          </div>
+          <div>
+            <div class="stat-val" id="stat-pending">0</div>
+            <div class="stat-label">Pending Approval</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #E3F2FD; color: #1565C0;">
+            <i class="ri-checkbox-circle-line"></i>
+          </div>
+          <div>
+            <div class="stat-val" id="stat-confirmed">0</div>
+            <div class="stat-label">Confirmed Bookings</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #E8F5E9; color: #2E7D32;">
+            <i class="ri-check-double-line"></i>
+          </div>
+          <div>
+            <div class="stat-val" id="stat-completed">0</div>
+            <div class="stat-label">Completed Orders</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Search Controls -->
+      <div class="controls-bar">
+        <div class="status-tabs">
+          <button class="tab-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+          <button class="tab-btn" data-filter="Pending" onclick="setFilter('Pending', this)">Pending</button>
+          <button class="tab-btn" data-filter="Confirmed" onclick="setFilter('Confirmed', this)">Confirmed</button>
+          <button class="tab-btn" data-filter="Completed" onclick="setFilter('Completed', this)">Completed</button>
+          <button class="tab-btn" data-filter="Cancelled" onclick="setFilter('Cancelled', this)">Cancelled</button>
+        </div>
+
+        <div class="search-box">
+          <i class="ri-search-line"></i>
+          <input type="text" id="search-input" class="search-input" placeholder="Search name, phone, code..." oninput="handleSearch(this.value)">
+        </div>
+      </div>
+
+      <!-- Appointments Table -->
+      <div class="table-card">
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Ref Code</th>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Date & Time</th>
+                <th>Requirements</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="appointments-tbody">
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="ri-loader-4-line ri-spin"></i>
+                  <p>Loading appointments from backend...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      &copy; 2026 Dharani Women's Tailors • Connected to Flask REST API Backend
+    </footer>
+  </div>
+
+  <!-- ==============================================================
+       SCRIPTS: AUTHENTICATION & DASHBOARD LOGIC
+       ============================================================== -->
+  <script>
+    const AUTH_STORAGE_KEY = 'dharani_admin_authenticated';
+    const AUTH_EMAIL_KEY = 'dharani_admin_email';
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let searchTimeout = null;
+
+    // --- Authentication Logic ---
+
+    function checkAuthStatus() {
+      const isAuth = localStorage.getItem(AUTH_STORAGE_KEY) === 'true' || 
+                     sessionStorage.getItem(AUTH_STORAGE_KEY) === 'true';
+
+      const loginView = document.getElementById('admin-login-view');
+      const dashView = document.getElementById('admin-dashboard-view');
+
+      if (isAuth) {
+        loginView.style.display = 'none';
+        dashView.style.display = 'flex';
+        
+        const storedEmail = localStorage.getItem(AUTH_EMAIL_KEY) || sessionStorage.getItem(AUTH_EMAIL_KEY) || 'dharanitailors@gmail.com';
+        document.getElementById('header-admin-email').textContent = storedEmail;
+
+        loadStats();
+        loadAppointments();
+      } else {
+        loginView.style.display = 'flex';
+        dashView.style.display = 'none';
+        setTimeout(() => {
+          const pwd = document.getElementById('admin-password');
+          if (pwd) pwd.focus();
+        }, 100);
+      }
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      
+      const emailInput = document.getElementById('admin-email');
+      const pwdInput = document.getElementById('admin-password');
+      const rememberCheckbox = document.getElementById('remember-me');
+      const alertBox = document.getElementById('login-alert');
+      const alertText = document.getElementById('login-alert-text');
+      const submitBtn = document.getElementById('login-submit-btn');
+      const btnText = document.getElementById('login-btn-text');
+      const btnIcon = document.getElementById('login-btn-icon');
+
+      const email = emailInput.value.trim();
+      const password = pwdInput.value;
+
+      // Hide previous alert
+      alertBox.style.display = 'none';
+
+      // Set button to loading state
+      submitBtn.disabled = true;
+      btnText.textContent = 'Authenticating...';
+      btnIcon.className = 'ri-loader-4-line ri-spin';
+
+      try {
+        const response = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Success
+          btnText.textContent = 'Access Granted!';
+          btnIcon.className = 'ri-check-line';
+
+          const targetStorage = rememberCheckbox.checked ? localStorage : sessionStorage;
+          targetStorage.setItem(AUTH_STORAGE_KEY, 'true');
+          targetStorage.setItem(AUTH_EMAIL_KEY, data.admin.email || email);
+
+          // If remembered, clear other storage
+          if (rememberCheckbox.checked) {
+            sessionStorage.removeItem(AUTH_STORAGE_KEY);
+          } else {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+          }
+
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            btnText.textContent = 'Sign In to Dashboard';
+            btnIcon.className = 'ri-arrow-right-line';
+            pwdInput.value = '';
+            checkAuthStatus();
+          }, 450);
+
+        } else {
+          // Failure
+          submitBtn.disabled = false;
+          btnText.textContent = 'Sign In to Dashboard';
+          btnIcon.className = 'ri-arrow-right-line';
+
+          alertText.textContent = data.error || 'Invalid email or password. Please try again.';
+          alertBox.style.display = 'flex';
+          pwdInput.focus();
+          pwdInput.select();
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        btnText.textContent = 'Sign In to Dashboard';
+        btnIcon.className = 'ri-arrow-right-line';
+
+        alertText.textContent = 'Unable to reach backend server. Please verify connection.';
+        alertBox.style.display = 'flex';
+      }
+    }
+
+    function logoutAdmin() {
+      if (confirm('Are you sure you want to log out of the Admin Portal?')) {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        localStorage.removeItem(AUTH_EMAIL_KEY);
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
+        sessionStorage.removeItem(AUTH_EMAIL_KEY);
+
+        document.getElementById('admin-password').value = '';
+        checkAuthStatus();
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('admin-password');
+      const pwdIcon = document.getElementById('pwd-toggle-icon');
+      
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        pwdIcon.className = 'ri-eye-off-line';
+      } else {
+        pwdInput.type = 'password';
+        pwdIcon.className = 'ri-eye-line';
+      }
+    }
+
+    function fillAdminCredentials() {
+      document.getElementById('admin-email').value = 'dharanitailors@gmail.com';
+      document.getElementById('admin-password').value = 'dharani@2006';
+      document.getElementById('login-alert').style.display = 'none';
+    }
+
+    // --- Dashboard Data Loading ---
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('stat-total').textContent = data.stats.total;
+          document.getElementById('stat-pending').textContent = data.stats.pending;
+          document.getElementById('stat-confirmed').textContent = data.stats.confirmed;
+          document.getElementById('stat-completed').textContent = data.stats.completed;
+        }
+      } catch (e) {
+        console.error('Error loading stats:', e);
+      }
+    }
+
+    async function loadAppointments() {
+      const tbody = document.getElementById('appointments-tbody');
+      try {
+        let url = `/api/appointments?status=${encodeURIComponent(currentFilter)}&search=${encodeURIComponent(searchQuery)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.success || data.appointments.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="empty-state">
+                <i class="ri-inbox-line"></i>
+                <p>No appointments found matching current filter.</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = data.appointments.map(item => {
+          const statusClass = 'badge-' + (item.status ? item.status.toLowerCase() : 'pending');
+          const cleanPhone = item.phone.replace(/\D/g, '');
+          const waMessage = encodeURIComponent(`Hello ${item.name}, this is Dharani Women's Tailors regarding your appointment (${item.booking_code}) for ${item.service} on ${item.date}.`);
+          const waUrl = `https://wa.me/91${cleanPhone}?text=${waMessage}`;
+
+          return `
+            <tr>
+              <td><span class="code-badge">${escapeHtml(item.booking_code)}</span></td>
+              <td>
+                <div style="font-weight: 600; color: #2C1A21;">${escapeHtml(item.name)}</div>
+                <div style="font-size: 0.8rem; color: #6B555E;">📞 ${escapeHtml(item.phone)}</div>
+              </td>
+              <td><span style="font-weight: 500;">${escapeHtml(item.service)}</span></td>
+              <td>
+                <div>📅 ${escapeHtml(item.date)}</div>
+                <div style="font-size: 0.8rem; color: #6B555E;">⏰ ${escapeHtml(item.time)}</div>
+              </td>
+              <td style="max-width: 240px; font-size: 0.85rem; color: #555;">
+                ${escapeHtml(item.notes || 'None')}
+              </td>
+              <td>
+                <select class="status-select" onchange="updateStatus(${item.id}, this.value)">
+                  <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                  <option value="Confirmed" ${item.status === 'Confirmed' ? 'selected' : ''}>✅ Confirmed</option>
+                  <option value="Completed" ${item.status === 'Completed' ? 'selected' : ''}>🎉 Completed</option>
+                  <option value="Cancelled" ${item.status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
+                </select>
+              </td>
+              <td>
+                <div class="action-links">
+                  <a href="${waUrl}" target="_blank" class="btn-icon btn-icon-wa" title="WhatsApp Customer">
+                    <i class="ri-whatsapp-line"></i>
+                  </a>
+                  <button onclick="deleteAppointment(${item.id})" class="btn-icon btn-icon-del" title="Delete">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state">
+              <i class="ri-error-warning-line" style="color: #c62828;"></i>
+              <p>Failed to load appointments. Make sure backend is running.</p>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    async function updateStatus(id, newStatus) {
+      try {
+        const res = await fetch(`/api/appointments/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadStats();
+        } else {
+          alert('Could not update status: ' + data.error);
+        }
+      } catch (e) {
+        alert('Server connection error.');
+      }
+    }
+
+    async function deleteAppointment(id) {
+      if (!confirm('Are you sure you want to delete this appointment?')) return;
+      try {
+        const res = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          loadAppointments();
+          loadStats();
+        } else {
+          alert('Error deleting: ' + data.error);
+        }
+      } catch (e) {
+        alert('Server connection error.');
+      }
+    }
+
+    function setFilter(status, btn) {
+      currentFilter = status;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadAppointments();
+    }
+
+    function handleSearch(val) {
+      clearTimeout(searchTimeout);
+      searchQuery = val.trim();
+      searchTimeout = setTimeout(() => {
+        loadAppointments();
+      }, 300);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+
+    // Initial load check
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuthStatus();
+    });
+  </script>
+</body>
+</html>
