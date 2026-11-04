@@ -55,10 +55,12 @@ function initTailorApp() {
     }
     if (nav) {
       nav.classList.add('active');
-      nav.style.setProperty('display', 'block', 'important');
     }
     if (menu) menu.classList.add('active');
-    if (hdr) hdr.classList.add('menu-open');
+    if (hdr) {
+      hdr.classList.add('nav-open');
+      hdr.classList.add('menu-open');
+    }
   };
 
   window.closeMobileNav = function() {
@@ -73,10 +75,12 @@ function initTailorApp() {
     }
     if (nav) {
       nav.classList.remove('active');
-      nav.style.setProperty('display', 'none', 'important');
     }
     if (menu) menu.classList.remove('active');
-    if (hdr) hdr.classList.remove('menu-open');
+    if (hdr) {
+      hdr.classList.remove('nav-open');
+      hdr.classList.remove('menu-open');
+    }
   };
 
   window.toggleMobileNav = function(e) {
@@ -97,7 +101,8 @@ function initTailorApp() {
     }
   };
 
-  // Ensure closed state on init
+  // Clean any stale inline display style on init
+  if (mainNav) mainNav.style.removeProperty('display');
   window.closeMobileNav();
 
   // Close mobile menu when clicking any navigation link

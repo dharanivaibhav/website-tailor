@@ -73,7 +73,6 @@
           <li><a href="#gallery" class="nav-link" onclick="closeMobileNav()">Gallery</a></li>
           <li><a href="#pricing" class="nav-link" onclick="closeMobileNav()">Pricing</a></li>
           <li><a href="#contact" class="nav-link" onclick="closeMobileNav()">Contact</a></li>
-          <li class="admin-nav-item"><a href="/admin" class="nav-link" target="_blank" style="color: var(--color-accent); font-weight: 600;"><i class="ri-shield-user-line"></i> Admin</a></li>
         </ul>
       </nav>
 
@@ -835,13 +834,9 @@
         if (e.stopPropagation) e.stopPropagation();
       }
       var toggle = document.getElementById('mobile-toggle');
-      var mainNav = document.getElementById('main-nav');
-      if (!toggle || !mainNav) return;
+      if (!toggle) return;
 
-      var isOpen = toggle.getAttribute('aria-expanded') === 'true' ||
-                   toggle.classList.contains('active') ||
-                   mainNav.classList.contains('active');
-
+      var isOpen = toggle.getAttribute('aria-expanded') === 'true' || toggle.classList.contains('active');
       if (isOpen) {
         closeMobileNav();
       } else {
@@ -853,16 +848,16 @@
       var toggle = document.getElementById('mobile-toggle');
       var mainNav = document.getElementById('main-nav');
       var header = document.getElementById('header');
+
       if (toggle) {
         toggle.classList.add('active');
         toggle.setAttribute('aria-expanded', 'true');
       }
       if (mainNav) {
         mainNav.classList.add('active');
-        mainNav.style.setProperty('display', 'block', 'important');
       }
       if (header) {
-        header.classList.add('menu-open');
+        header.classList.add('nav-open');
       }
     }
 
@@ -870,27 +865,31 @@
       var toggle = document.getElementById('mobile-toggle');
       var mainNav = document.getElementById('main-nav');
       var header = document.getElementById('header');
+
       if (toggle) {
         toggle.classList.remove('active');
         toggle.setAttribute('aria-expanded', 'false');
       }
       if (mainNav) {
         mainNav.classList.remove('active');
-        mainNav.style.setProperty('display', 'none', 'important');
       }
       if (header) {
-        header.classList.remove('menu-open');
+        header.classList.remove('nav-open');
       }
     }
+
+    // Ensure no stale inline styles
+    var initialNav = document.getElementById('main-nav');
+    if (initialNav) initialNav.style.removeProperty('display');
 
     document.addEventListener('click', function(e) {
       var toggle = document.getElementById('mobile-toggle');
       var mainNav = document.getElementById('main-nav');
       var header = document.getElementById('header');
       if (toggle && toggle.getAttribute('aria-expanded') === 'true') {
-        var clickedInHeader = header && header.contains(e.target);
-        var clickedInNav = mainNav && mainNav.contains(e.target);
-        if (!clickedInHeader && !clickedInNav) {
+        var inHeader = header && header.contains(e.target);
+        var inNav = mainNav && mainNav.contains(e.target);
+        if (!inHeader && !inNav) {
           closeMobileNav();
         }
       }
@@ -903,8 +902,6 @@
     window.addEventListener('resize', function() {
       if (window.innerWidth > 868) {
         closeMobileNav();
-        var mainNav = document.getElementById('main-nav');
-        if (mainNav) mainNav.style.removeProperty('display');
       }
     });
   </script>
