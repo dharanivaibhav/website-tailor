@@ -43,71 +43,99 @@ function initTailorApp() {
   // --- 2. Mobile Navigation Toggle ---
   const mainNav = document.getElementById('main-nav') || document.querySelector('nav');
 
-  if (mobileToggle) {
-    const closeMobileMenu = () => {
-      if (mainNav) mainNav.classList.remove('active');
-      if (navMenu) navMenu.classList.remove('active');
-      if (header) header.classList.remove('menu-open');
-      mobileToggle.classList.remove('active');
-      mobileToggle.setAttribute('aria-expanded', 'false');
-    };
+  window.openMobileNav = function() {
+    const toggle = document.getElementById('mobile-toggle');
+    const nav = document.getElementById('main-nav') || document.querySelector('nav');
+    const menu = document.getElementById('nav-menu');
+    const hdr = document.getElementById('header');
 
-    const openMobileMenu = () => {
-      if (mainNav) mainNav.classList.add('active');
-      if (navMenu) navMenu.classList.add('active');
-      if (header) header.classList.add('menu-open');
-      mobileToggle.classList.add('active');
-      mobileToggle.setAttribute('aria-expanded', 'true');
-    };
+    if (toggle) {
+      toggle.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    if (nav) {
+      nav.classList.add('active');
+      nav.style.setProperty('display', 'block', 'important');
+    }
+    if (menu) menu.classList.add('active');
+    if (hdr) hdr.classList.add('menu-open');
+  };
 
-    // Ensure initial closed state on load
-    closeMobileMenu();
+  window.closeMobileNav = function() {
+    const toggle = document.getElementById('mobile-toggle');
+    const nav = document.getElementById('main-nav') || document.querySelector('nav');
+    const menu = document.getElementById('nav-menu');
+    const hdr = document.getElementById('header');
 
-    mobileToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isOpen = mobileToggle.getAttribute('aria-expanded') === 'true' ||
-                     (mainNav && mainNav.classList.contains('active')) ||
-                     (navMenu && navMenu.classList.contains('active'));
-      if (isOpen) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
+    if (toggle) {
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    if (nav) {
+      nav.classList.remove('active');
+      nav.style.setProperty('display', 'none', 'important');
+    }
+    if (menu) menu.classList.remove('active');
+    if (hdr) hdr.classList.remove('menu-open');
+  };
+
+  window.toggleMobileNav = function(e) {
+    if (e) {
+      if (e.preventDefault) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
+    const toggle = document.getElementById('mobile-toggle');
+    const nav = document.getElementById('main-nav') || document.querySelector('nav');
+
+    const isOpen = (toggle && (toggle.getAttribute('aria-expanded') === 'true' || toggle.classList.contains('active'))) ||
+                   (nav && nav.classList.contains('active'));
+
+    if (isOpen) {
+      window.closeMobileNav();
+    } else {
+      window.openMobileNav();
+    }
+  };
+
+  // Ensure closed state on init
+  window.closeMobileNav();
+
+  // Close mobile menu when clicking any navigation link
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      window.closeMobileNav();
+    });
+  });
+
+  // Close mobile menu when clicking outside header or nav panel
+  document.addEventListener('click', (e) => {
+    const toggle = document.getElementById('mobile-toggle');
+    const nav = document.getElementById('main-nav') || document.querySelector('nav');
+    const hdr = document.getElementById('header');
+    if (toggle && toggle.getAttribute('aria-expanded') === 'true') {
+      const inHeader = hdr && hdr.contains(e.target);
+      const inNav = nav && nav.contains(e.target);
+      if (!inHeader && !inNav) {
+        window.closeMobileNav();
       }
-    });
+    }
+  });
 
-    // Close mobile menu when clicking any navigation link
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        closeMobileMenu();
-      });
-    });
+  // Close mobile menu on resize to desktop view
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 868) {
+      window.closeMobileNav();
+      const nav = document.getElementById('main-nav') || document.querySelector('nav');
+      if (nav) nav.style.removeProperty('display');
+    }
+  });
 
-    // Close mobile menu when clicking outside header or nav panel
-    document.addEventListener('click', (e) => {
-      const isMenuOpen = mobileToggle.getAttribute('aria-expanded') === 'true';
-      if (isMenuOpen) {
-        const inHeader = header && header.contains(e.target);
-        const inNav = mainNav && mainNav.contains(e.target);
-        if (!inHeader && !inNav) {
-          closeMobileMenu();
-        }
-      }
-    });
-
-    // Close mobile menu on resize to desktop view
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 868) {
-        closeMobileMenu();
-      }
-    });
-
-    // Close mobile menu on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeMobileMenu();
-      }
-    });
-  }
+  // Close mobile menu on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      window.closeMobileNav();
+    }
+  });
 
   // --- 3. Set Minimum Date for Appointment Picker ---
   const dateInput = document.getElementById('date');

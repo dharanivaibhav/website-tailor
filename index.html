@@ -67,12 +67,12 @@
 
       <nav id="main-nav">
         <ul class="nav-menu" id="nav-menu">
-          <li><a href="#home" class="nav-link active">Home</a></li>
-          <li><a href="#about" class="nav-link">About</a></li>
-          <li><a href="#services" class="nav-link">Services</a></li>
-          <li><a href="#gallery" class="nav-link">Gallery</a></li>
-          <li><a href="#pricing" class="nav-link">Pricing</a></li>
-          <li><a href="#contact" class="nav-link">Contact</a></li>
+          <li><a href="#home" class="nav-link active" onclick="closeMobileNav()">Home</a></li>
+          <li><a href="#about" class="nav-link" onclick="closeMobileNav()">About</a></li>
+          <li><a href="#services" class="nav-link" onclick="closeMobileNav()">Services</a></li>
+          <li><a href="#gallery" class="nav-link" onclick="closeMobileNav()">Gallery</a></li>
+          <li><a href="#pricing" class="nav-link" onclick="closeMobileNav()">Pricing</a></li>
+          <li><a href="#contact" class="nav-link" onclick="closeMobileNav()">Contact</a></li>
           <li class="admin-nav-item"><a href="/admin" class="nav-link" target="_blank" style="color: var(--color-accent); font-weight: 600;"><i class="ri-shield-user-line"></i> Admin</a></li>
         </ul>
       </nav>
@@ -81,7 +81,7 @@
         <a href="#appointment" class="btn btn-primary">
           <i class="ri-calendar-check-line"></i> Book Appointment
         </a>
-        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <button type="button" class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMobileNav(event)">
           <span class="hamburger-bar"></span>
           <span class="hamburger-bar"></span>
           <span class="hamburger-bar"></span>
@@ -826,5 +826,87 @@
 
   <!-- JavaScript File -->
   <script src="script.js"></script>
+
+  <!-- Inline Fail-Safe Mobile Navigation Handler for Android WebView & Mobile Browsers -->
+  <script>
+    function toggleMobileNav(e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      }
+      var toggle = document.getElementById('mobile-toggle');
+      var mainNav = document.getElementById('main-nav');
+      if (!toggle || !mainNav) return;
+
+      var isOpen = toggle.getAttribute('aria-expanded') === 'true' ||
+                   toggle.classList.contains('active') ||
+                   mainNav.classList.contains('active');
+
+      if (isOpen) {
+        closeMobileNav();
+      } else {
+        openMobileNav();
+      }
+    }
+
+    function openMobileNav() {
+      var toggle = document.getElementById('mobile-toggle');
+      var mainNav = document.getElementById('main-nav');
+      var header = document.getElementById('header');
+      if (toggle) {
+        toggle.classList.add('active');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+      if (mainNav) {
+        mainNav.classList.add('active');
+        mainNav.style.setProperty('display', 'block', 'important');
+      }
+      if (header) {
+        header.classList.add('menu-open');
+      }
+    }
+
+    function closeMobileNav() {
+      var toggle = document.getElementById('mobile-toggle');
+      var mainNav = document.getElementById('main-nav');
+      var header = document.getElementById('header');
+      if (toggle) {
+        toggle.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      if (mainNav) {
+        mainNav.classList.remove('active');
+        mainNav.style.setProperty('display', 'none', 'important');
+      }
+      if (header) {
+        header.classList.remove('menu-open');
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      var toggle = document.getElementById('mobile-toggle');
+      var mainNav = document.getElementById('main-nav');
+      var header = document.getElementById('header');
+      if (toggle && toggle.getAttribute('aria-expanded') === 'true') {
+        var clickedInHeader = header && header.contains(e.target);
+        var clickedInNav = mainNav && mainNav.contains(e.target);
+        if (!clickedInHeader && !clickedInNav) {
+          closeMobileNav();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMobileNav();
+    });
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 868) {
+        closeMobileNav();
+        var mainNav = document.getElementById('main-nav');
+        if (mainNav) mainNav.style.removeProperty('display');
+      }
+    });
+  </script>
 </body>
 </html>
