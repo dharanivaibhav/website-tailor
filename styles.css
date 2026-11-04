@@ -1640,6 +1640,19 @@ textarea.form-control {
     display: block !important;
   }
 
+  .nav-menu .admin-nav-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    color: var(--color-accent, #C59B6C) !important;
+    font-weight: 600 !important;
+  }
+
+  .nav-menu .admin-nav-link:hover {
+    color: var(--color-primary, #9E3B5E) !important;
+  }
+
+
   .mobile-toggle {
     display: none !important;
   }
@@ -1824,6 +1837,20 @@ textarea.form-control {
   .nav-menu .nav-link::after {
     display: none !important;
   }
+
+  .nav-menu .admin-nav-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    color: var(--color-accent, #C59B6C) !important;
+    font-weight: 600 !important;
+  }
+
+  .nav-menu .admin-nav-link:hover {
+    background-color: rgba(197, 155, 108, 0.12) !important;
+    color: var(--color-primary, #9E3B5E) !important;
+  }
+
 
   /* 2. Home Section */
   .hero-section {
