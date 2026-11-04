@@ -2,7 +2,7 @@
  * Dharani Women's Tailors - Main Interactive Script
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initTailorApp() {
   // --- 1. Sticky Header & Active Nav Scroll Spy ---
   const header = document.getElementById('header');
   const navLinks = document.querySelectorAll('.nav-link');
@@ -41,57 +41,69 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- 2. Mobile Navigation Toggle ---
-  if (mobileToggle && navMenu) {
+  const mainNav = document.getElementById('main-nav') || document.querySelector('nav');
+
+  if (mobileToggle) {
     const closeMobileMenu = () => {
-      navMenu.classList.remove('active');
+      if (mainNav) mainNav.classList.remove('active');
+      if (navMenu) navMenu.classList.remove('active');
       if (header) header.classList.remove('menu-open');
-      const icon = mobileToggle.querySelector('i');
-      if (icon) {
-        icon.classList.replace('ri-close-line', 'ri-menu-3-line');
-      }
+      mobileToggle.classList.remove('active');
+      mobileToggle.setAttribute('aria-expanded', 'false');
     };
+
+    const openMobileMenu = () => {
+      if (mainNav) mainNav.classList.add('active');
+      if (navMenu) navMenu.classList.add('active');
+      if (header) header.classList.add('menu-open');
+      mobileToggle.classList.add('active');
+      mobileToggle.setAttribute('aria-expanded', 'true');
+    };
+
+    // Ensure initial closed state on load
+    closeMobileMenu();
 
     mobileToggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      navMenu.classList.toggle('active');
-      const isOpen = navMenu.classList.contains('active');
-      if (header) {
-        header.classList.toggle('menu-open', isOpen);
-      }
-      const icon = mobileToggle.querySelector('i');
-      if (icon) {
-        if (isOpen) {
-          icon.classList.replace('ri-menu-3-line', 'ri-close-line');
-        } else {
-          icon.classList.replace('ri-close-line', 'ri-menu-3-line');
-        }
+      const isOpen = mobileToggle.getAttribute('aria-expanded') === 'true' ||
+                     (mainNav && mainNav.classList.contains('active')) ||
+                     (navMenu && navMenu.classList.contains('active'));
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
       }
     });
 
-    // Close mobile menu when clicking nav link
+    // Close mobile menu when clicking any navigation link
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
         closeMobileMenu();
       });
     });
 
-    // Close mobile menu when clicking outside header
+    // Close mobile menu when clicking outside header or nav panel
     document.addEventListener('click', (e) => {
-      if (navMenu.classList.contains('active') && header && !header.contains(e.target)) {
-        closeMobileMenu();
+      const isMenuOpen = mobileToggle.getAttribute('aria-expanded') === 'true';
+      if (isMenuOpen) {
+        const inHeader = header && header.contains(e.target);
+        const inNav = mainNav && mainNav.contains(e.target);
+        if (!inHeader && !inNav) {
+          closeMobileMenu();
+        }
       }
     });
 
     // Close mobile menu on resize to desktop view
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 868 && navMenu.classList.contains('active')) {
+      if (window.innerWidth > 868) {
         closeMobileMenu();
       }
     });
 
     // Close mobile menu on Escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+      if (e.key === 'Escape') {
         closeMobileMenu();
       }
     });
@@ -363,4 +375,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-});
+}
+
+// Ensure execution even if DOMContentLoaded has already fired in Android WebView
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTailorApp);
+} else {
+  initTailorApp();
+}

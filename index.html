@@ -65,14 +65,15 @@
         </div>
       </a>
 
-      <nav>
+      <nav id="main-nav">
         <ul class="nav-menu" id="nav-menu">
           <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
           <li><a href="#services" class="nav-link">Services</a></li>
           <li><a href="#gallery" class="nav-link">Gallery</a></li>
           <li><a href="#pricing" class="nav-link">Pricing</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
-          <li><a href="/admin" class="nav-link" target="_blank" style="color: var(--color-accent); font-weight: 600;"><i class="ri-shield-user-line"></i> Admin</a></li>
+          <li class="admin-nav-item"><a href="/admin" class="nav-link" target="_blank" style="color: var(--color-accent); font-weight: 600;"><i class="ri-shield-user-line"></i> Admin</a></li>
         </ul>
       </nav>
 
@@ -80,8 +81,10 @@
         <a href="#appointment" class="btn btn-primary">
           <i class="ri-calendar-check-line"></i> Book Appointment
         </a>
-        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu">
-          <i class="ri-menu-3-line"></i>
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
         </button>
       </div>
     </div>
@@ -116,7 +119,7 @@
           </a>
         </div>
 
-        <div class="hero-stats">
+        <div class="hero-stats" id="about">
           <div class="stat-item">
             <h4>100%</h4>
             <p>Fit Guarantee</p>
